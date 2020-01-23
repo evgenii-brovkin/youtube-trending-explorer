@@ -89,6 +89,6 @@ def fetch_youtube_trending_data(save_data=True):
     regions = ['US', 'GB', 'RU', 'DE']
     videos_df = pd.concat(list(map(lambda x: compose_dataframe(x, 50), regions)))
     if save_data:
-        videos_df.to_parquet(f'data/video_data_{pd.Timestamp.now().date()}.parquet', allow_truncated_timestamps=True)
-        return videos_df, f'data/video_data_{pd.Timestamp.now().date()}.parquet'
+        videos_df.to_csv(f'data/video_data_{pd.Timestamp.now().date()}.csv')
+        return videos_df, f'data/video_data_{pd.Timestamp.now().date()}.csv'
     return videos_df
