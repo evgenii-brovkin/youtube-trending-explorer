@@ -1,5 +1,6 @@
 import urllib.request as ur
 import pandas as pd
+import os
 
 from .api_helper import get_video_data
 
@@ -89,6 +90,9 @@ def fetch_youtube_trending_data(save_data=True):
     regions = ['US', 'GB', 'RU', 'DE']
     videos_df = pd.concat(list(map(lambda x: compose_dataframe(x, 50), regions)))
     if save_data:
-        videos_df.to_csv(f'data/video_data_{pd.Timestamp.now().date()}.csv')
-        return videos_df, f'data/video_data_{pd.Timestamp.now().date()}.csv'
+        now_ts = pd.Timestamp.now().date()
+        if not os.path.exists('data'):
+            os.mkdir('data')
+        videos_df.to_csv(f'data/video_data_{now_ts}.csv')
+        return videos_df, f'data/video_data_{now_ts}.csv'
     return videos_df
