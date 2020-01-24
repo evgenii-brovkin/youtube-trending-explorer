@@ -27,7 +27,7 @@ def upload_file(path_to_local_file, destination_path, drive_service, file_mimety
         q="mimeType = 'application/vnd.google-apps.folder'",
         pageSize=10, fields="files(name, id, mimeType, parents, properties)"
     ).execute()
-    parents = [dir['id'] for dir in directories['files'] if dir['name'] in parent_dirs]
+    parents = [dir['id'] for dir in directories['files'] if dir['name'] == parent_dirs[-1]]
     file_metadata = {
         'name': filename, 
         'parents': parents
