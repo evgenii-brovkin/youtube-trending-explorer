@@ -1,4 +1,5 @@
-from typing import Dict, NoReturn, Any
+import os
+from typing import Dict, NoReturn, Any, Optional
 
 from google.oauth2 import service_account
 
@@ -7,7 +8,7 @@ from googleapiclient.http import MediaFileUpload
 
 
 def build_drive_service(
-    serice_account_credentials_file: str = "service_account_credentials.json",
+    serice_account_credentials_file: Optional[str] = "service_account_credentials.json"
 ):
     """
     Connect and authenticate to a Google API service account 
@@ -15,9 +16,17 @@ def build_drive_service(
     
     Return a drive resource object for interacting with Drive API
     """
-    credentials = service_account.Credentials.from_service_account_file(
-        serice_account_credentials_file
-    )
+    
+    serice_account_credentials = os.environ.get('SERVICE_ACC_CREDS', None)
+    if serice_account_credentials is not None:
+        serice_account_credentials = eval(serice_account_credentials)
+        credentials = service_account.Credentials.from_service_account_info(
+            serice_account_credentials
+        )
+    else:
+        credentials = service_account.Credentials.from_service_account_file(
+            serice_account_credentials_file
+        )
     return build("drive", "v3", credentials=credentials)
 
 
@@ -42,7 +51,7 @@ def upload_file(
         .list(
             q="mimeType = 'application/vnd.google-apps.folder'",
             pageSize=10,
-            fields="files(name)",
+            fields="files(name, id)",
         )
         .execute()
     )
@@ -83,15 +92,17 @@ def delete_file(file_id: str, drive_service=None) -> NoReturn:
     drive_service.files().delete(fileId=file_id).execute()
 
 
-def build_youtube_service(api_key_file: str = "api_key.txt"):
+def build_youtube_service(api_key_file: Optional[str] = "api_key.txt"):
     """
     Connect and authenticate to a Youtube Data API  
     using key from `api_key_file` file.
     
     Return a youtube resource object for interacting with Youtube API
     """
-    with open(api_key_file, "r") as f:
-        api_key = f.read()
+    api_key = os.environ.get('YT_API_KEY', None)
+    if api_key is None:
+        with open(api_key_file, "r") as f:
+            api_key = f.read()
     youtube_service = build("youtube", "v3", developerKey=api_key)
     return youtube_service
 
