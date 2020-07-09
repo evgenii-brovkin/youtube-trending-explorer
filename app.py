@@ -31,7 +31,7 @@ def double_check():
 
 
 def main():
-    schedule.every().day.at("8:00").do(daily_routine)
+    schedule.every().day.at("08:00").do(daily_routine)
     schedule.every().day.at("11:00").do(double_check)
     schedule.every().day.at("14:00").do(double_check)
     schedule.every().day.at("17:00").do(double_check)
