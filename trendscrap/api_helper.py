@@ -34,7 +34,7 @@ def upload_file(
     path_to_local_file: str,
     destination_path: str,
     drive_service=None,
-    file_mimetype: str = None,
+    file_mimetype: Optional[str] = 'text/csv',
 ) -> str:
     """
     Upload a file located in `path_to_local_file` to `destination_path`. 
@@ -135,7 +135,7 @@ def exists(file_name: str, drive_service=None) -> bool:
         drive_service = build_drive_service()
     responce = (
         drive_service.files()
-        .list(q=f"name = '{file_name}'", fields="files(name)")
+        .list(q=f"name = '{file_name}'", fields="files(name, id, parents)")
         .execute()
     )
     if len(responce["files"]) > 0:
